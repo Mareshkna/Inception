@@ -9,7 +9,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	
 	chown -R mysql:mysql /var/lib/mysql
 
-	# init database
+	# Database initialization
 	mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm > /dev/null
 
 	tfile=`mktemp`
@@ -17,7 +17,6 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 		return 1
 	fi
 
-	# https://stackoverflow.com/questions/10299148/mysql-error-1045-28000-access-denied-for-user-billlocalhost-using-passw
 	cat << EOF > $tfile
 USE mysql;
 FLUSH PRIVILEGES;
@@ -35,12 +34,12 @@ GRANT ALL PRIVILEGES ON $WP_DATABASE_NAME.* TO '$WP_DATABASE_USR'@'%';
 
 FLUSH PRIVILEGES;
 EOF
-	# run init.sql
+	# Run init.sql
 	/usr/bin/mysqld --user=mysql --bootstrap < $tfile
 	rm -f $tfile
 fi
 
-# allow remote connections
+# Allow remote connections
 sed -i "s|skip-networking|# skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
 sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
 

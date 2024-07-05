@@ -55,20 +55,22 @@ RUN	apk update && apk upgrade && apk add --no-cache \
 		php7-zlib					
 		
 
-# php config
+# Copy PHP configuration
 RUN	adduser -S nginx &&	addgroup -S nginx
 COPY conf/php-fpm.conf /etc/php7/php-fpm.conf
 COPY conf/www.conf /etc/php7/php-fpm.d/www.conf
 
-# static website
+# Copy HTML file
 COPY conf/index.html /tmp/index.html
 
-# install wordpress
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN cp wp-cli.phar /usr/bin/wp
+# Install WP-CLI
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+	chmod +x wp-cli.phar && \
+	cp wp-cli.phar /usr/bin/wp
 
+# Change directory
 WORKDIR /var/www/html/wordpress
 
+# Launch the script
 COPY tools/configure.sh /tmp/configure.sh
 ENTRYPOINT [ "sh", "/tmp/configure.sh" ]
