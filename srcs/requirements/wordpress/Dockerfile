@@ -74,3 +74,4 @@ WORKDIR /var/www/html/wordpress
 # Launch the script
 COPY tools/configure.sh /tmp/configure.sh
 ENTRYPOINT [ "sh", "/tmp/configure.sh" ]
+CMD [ "/usr/sbin/php-fpm7", "-F", "-R"]

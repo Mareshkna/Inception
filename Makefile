@@ -1,3 +1,5 @@
+LOGIN = yasabri
+
 all :
 	sudo mkdir -p ~/data/wordpress
 	sudo mkdir -p ~/data/mariadb
